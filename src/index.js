@@ -29,7 +29,7 @@ const PARAMS = {
 
 
 const PARAMS_GUI = {
-    animate: true,
+    animate: false,
     door: {
         w: {
             min: 30,
@@ -37,7 +37,7 @@ const PARAMS_GUI = {
         },
         h: {
             min: 30,
-            max: 150,
+            max: 300,
         },
         z: {
             min: 2,
@@ -57,7 +57,7 @@ const PARAMS_GUI = {
         },
         z3: {
             min: 0,
-            max: 15,
+            max: 40,
         },
         frame3: {
             min: 0,
@@ -110,6 +110,9 @@ const initApp = () => {
                 shininess: 50,
                 specular: 0xffffff,
                 flatShading: true,
+            }),
+            new THREE.MeshPhongMaterial({
+                color: 0x111111,
             }),
         ]
 
