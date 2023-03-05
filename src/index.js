@@ -1,51 +1,211 @@
 import { checkDevice } from './utils/checkDevice'
 import { hideStartScreen } from './ui/hideStartScreen'
 import { createStudio } from './entities/studio'
-//import { createKeyBoard } from './utils/createKeyBoard'
 import { createLoadManager } from './helpers/loadManager'
-//import { createPlayer } from './entities/player'
 import { startFrameUpdater  } from './utils/createFrameUpater'
 import { ASSETS_TO_LOAD } from './constants/constants_assetsToLoad'
-//import { createCyberTruck } from  './systems/cyberTruck'
-//import { createTown } from './systems/town'
 import { createDoor } from './entities/door'
+import { createBox } from './entities/box'
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import * as THREE from "three";
+import { ARR_STATES } from './constants/animations'
 
 
-const root = {
-    appData: {}
+const PARAMS = {
+    door: {
+        w: 80,
+        h: 80,
+        z: 5,
+        frame: 15,
+        z2: 3,
+        frame2: 5,
+        z3: 3,
+        frame3: 5,
+        openAngle: -.5,
+        zBox: -50,
+        tBox: 7,
+    }
 }
 
 
+const PARAMS_GUI = {
+    animate: true,
+    door: {
+        w: {
+            min: 30,
+            max: 150,
+        },
+        h: {
+            min: 30,
+            max: 150,
+        },
+        z: {
+            min: 2,
+            max: 15,
+        },
+        frame: {
+            min: 5,
+            max: 30,
+        },
+        z2: {
+            min: 1,
+            max: 30,
+        },
+        frame2: {
+            min: 0,
+            max: 15,
+        },
+        z3: {
+            min: 0,
+            max: 15,
+        },
+        frame3: {
+            min: 0,
+            max: 15,
+        },
+        openAngle: {
+            min: -Math.PI,
+            max: 0,
+        },
+        zBox: {
+            min: -150,
+            max: -20,
+        },
+        tBox: {
+            min: 1,
+            max: 15,
+        },
+    },
+}
+
+
+
+const root = {}
+
 const initApp = () => {
-    root.device = checkDevice()
     root.studio = createStudio(root)
-    //root.keyboard = createKeyBoard(root)
     root.loadManager = createLoadManager()
 
     root.loadManager.startLoad(ASSETS_TO_LOAD).then(assets => {
-        root.studio.setBack(assets.skyBox)
         root.assets = assets
 
-        root.studio.render()
-        //root.town = createTown(root)
-        //root.cyberTruck = createCyberTruck(root)
-        //root.player = createPlayer(root)
-        //root.studio.setCamera(root.player.getCamera())
-        //root.cyberTruck.setPlayerToCollisions(root.player.getCollisionMesh())
+        root.materials = [
+            new THREE.MeshPhongMaterial({
+                color: 0x333333,
+                lightMap: assets['wAOMap'],
+                lightMapIntensity: .35,
+                normalMap: assets['wNormalMap'],
+                normalScale: new THREE.Vector2(.2, .2),
+                envMap: assets['skyBox'],
+                map: assets['wMap'],
+                reflectivity: .002,
+                shininess: 100,
+                specular: 0x333333,
+                flatShading: true,
 
-        const door = createDoor(root)
+                //clipShadows: true,
+                //shadowSide: THREE.DoubleSide,
+            }),
+            new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                envMap: assets['skyBox'],
+                reflectivity: 1,
+                shininess: 50,
+                specular: 0xffffff,
+                flatShading: true,
+
+                //clipShadows: true,
+                //shadowSide: THREE.DoubleSide,
+            }),
+        ]
+
+        root.studio.setBack(assets.skyBox)
+        root.studio.render()
+
+
+
+        const door = createDoor(root, PARAMS.door)
+        door.mesh.receiveShadow = true
+        door.mesh.castShadow = true
+        root.studio.addToScene(door.mesh)
+        door.mesh.rotation.y = PARAMS.door.openAngle
+
+        const box = createBox(root, PARAMS.door)
+        box.mesh.receiveShadow = true
+        box.mesh.castShadow = true
+        root.studio.addToScene(box.mesh)
+
+
+
+
+        let updaterParams = null
+        let currentStateIndex = 0
+        const createUpdtr = () => {
+            ++currentStateIndex
+            if (currentStateIndex === ARR_STATES.length) {
+                currentStateIndex = 0
+            }
+            updaterParams = animateToNew(ARR_STATES[currentStateIndex], v => {
+                door.setParams(v)
+                door.mesh.rotation.y = v.openAngle
+                box.setParams(v)
+                for (let key in v) {
+                    PARAMS.door[key] = v[key]
+                }
+            }, createUpdtr)
+        }
+        createUpdtr()
+
 
         root.frameUpdater = startFrameUpdater(root)
         root.frameUpdater.on(n => {
-            //root.player.update(n)
-            //root.cyberTruck.update(n)
+            if (PARAMS_GUI.animate) {
+                updaterParams && updaterParams.update()
+            }
             root.studio.render()
-            door.mesh.rotation.y += 0.01
         })
-        //hideStartScreen(root, root.keyboard.show)
-        hideStartScreen(root, () => {})
+        hideStartScreen(root, () => {
+            const gui = new GUI()
+            gui.add( PARAMS_GUI, 'animate' );
+            for (let key in PARAMS.door) {
+                gui.add(PARAMS.door, key).min( PARAMS_GUI.door[key].min).max(PARAMS_GUI.door[key].max).onChange(v => {
+                    PARAMS.door[key] = v
+                    door.setParams(PARAMS.door)
+                    door.mesh.rotation.y = PARAMS.door.openAngle
+                    box.setParams(PARAMS.door)
+                }).listen()
+            }
+            gui.open()
+        })
     })
 }
+
+
+const animateToNew = (target, onUpdate, oncomplete) => {
+    let phase = 0
+    const spd = 0.01
+    let savedParams = { ...PARAMS.door }
+    let targetParams = {...target.door}
+    let currentParams = { ...savedParams }
+
+    return {
+        update: () => {
+            phase += spd
+            if (phase > 1) {
+                phase = 1
+            }
+            for (let key in targetParams) {
+                currentParams[key] = savedParams[key] + phase * (targetParams[key] - savedParams[key])
+            }
+            onUpdate(currentParams)
+            if (phase === 1) {
+                oncomplete()
+            }
+        }
+    }
+}
+
+
 
 
 window.addEventListener('load', initApp)
