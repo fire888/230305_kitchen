@@ -14,39 +14,8 @@ import wHeightMap from '../assets/wood/streaky-plywood_height.png'
 import wNormalMap from '../assets/wood/streaky-plywood_normal-ogl.png'
 
 
-export const SEGMENT_SIZE = [40, 30]
 
 export const ASSETS_TO_LOAD = [
-    //{
-    //    type: 'obj',
-    //    filename: townSrc,
-    //    key: 'town'
-    //},
-    //{
-    //    type: 'gltfBin',
-    //    filename: cyberTruckSrc,
-    //    key: 'cyberTruck'
-    //},
-    // {
-    //     type: 'img',
-    //     filename: b01ImgSrc,
-    //     key: 'b01Map'
-    // },
-    // {
-    //     type: 'img',
-    //     filename: bumpMap,
-    //     key: 'bumpMap'
-    // },
-    // {
-    //     type: 'img',
-    //     filename: b02ImgSrc,
-    //     key: 'b02Map'
-    // },
-    // {
-    //     type: 'img',
-    //     filename: truckShadow,
-    //     key: 'truckShadowMap'
-    // },
     {
         type: 'cubeTextures',
         filename: [px, nx, py, ny, nz, pz],

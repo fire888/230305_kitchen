@@ -31,7 +31,7 @@ export const createStudio = () => {
 
     const ground = new THREE.Mesh(
         new THREE.PlaneGeometry(1000, 1000, 1, 1),
-        new THREE.ShadowMaterial( { color: 0x000011, opacity: .3, side: THREE.DoubleSide })
+        new THREE.ShadowMaterial( { color: 0x000011, opacity: .2, side: THREE.DoubleSide })
     )
 
     ground.rotation.x = - Math.PI / 2
@@ -47,11 +47,9 @@ export const createStudio = () => {
     scene.fog = new THREE.Fog(0x000000, 300, 3000)
 
     const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 10000)
-    camera.position.set(100, 200, 200)
-    camera.lookAt(50, 20, 0)
-
+    camera.position.set(100, 200, 300)
     const controls = new OrbitControls(camera, renderer.domElement)
-    controls.target.set(70, 50, 0)
+    controls.target.set(70, 100, 0)
     controls.update();
 
 

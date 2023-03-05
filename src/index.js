@@ -1,4 +1,3 @@
-import { checkDevice } from './utils/checkDevice'
 import { hideStartScreen } from './ui/hideStartScreen'
 import { createStudio } from './entities/studio'
 import { createLoadManager } from './helpers/loadManager'
@@ -114,10 +113,6 @@ const initApp = () => {
             }),
         ]
 
-        //root.studio.setBack(assets.skyBox)
-        //root.studio.render()
-
-
 
         const door = createDoor(root, PARAMS.door)
         door.mesh.receiveShadow = true
@@ -129,8 +124,6 @@ const initApp = () => {
         box.mesh.receiveShadow = true
         box.mesh.castShadow = true
         root.studio.addToScene(box.mesh)
-
-
 
 
         let updaterParams = null
