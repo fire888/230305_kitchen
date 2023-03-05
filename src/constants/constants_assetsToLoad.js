@@ -1,14 +1,6 @@
 import '../assets/progress-img.png'
 
-import cyberTruckSrc from '../assets/cyber_truck/scene.gltf'
-import '../assets/cyber_truck/scene.bin'
 
-import townSrc from '../assets/town.obj'
-
-import b01ImgSrc from '../assets/mapTown01.jpg'
-import b02ImgSrc from '../assets/mapTown02.jpg'
-import bumpMap from '../assets/bump.jpg'
-import truckShadow from '../assets/truckShadow.jpg'
 import nx from '../assets/nx.jpg'
 import px from '../assets/px.jpg'
 import nz from '../assets/nz.jpg'

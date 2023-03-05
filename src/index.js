@@ -13,6 +13,7 @@ import { ARR_STATES } from './constants/animations'
 
 const PARAMS = {
     door: {
+        openAngle: -.5,
         w: 80,
         h: 80,
         z: 5,
@@ -21,7 +22,7 @@ const PARAMS = {
         frame2: 5,
         z3: 3,
         frame3: 5,
-        openAngle: -.5,
+
         zBox: -50,
         tBox: 7,
     }
@@ -102,9 +103,6 @@ const initApp = () => {
                 shininess: 100,
                 specular: 0x333333,
                 flatShading: true,
-
-                //clipShadows: true,
-                //shadowSide: THREE.DoubleSide,
             }),
             new THREE.MeshPhongMaterial({
                 color: 0xffffff,
@@ -113,14 +111,11 @@ const initApp = () => {
                 shininess: 50,
                 specular: 0xffffff,
                 flatShading: true,
-
-                //clipShadows: true,
-                //shadowSide: THREE.DoubleSide,
             }),
         ]
 
-        root.studio.setBack(assets.skyBox)
-        root.studio.render()
+        //root.studio.setBack(assets.skyBox)
+        //root.studio.render()
 
 
 
@@ -140,7 +135,7 @@ const initApp = () => {
 
         let updaterParams = null
         let currentStateIndex = 0
-        const createUpdtr = () => {
+        const createUpdater = () => {
             ++currentStateIndex
             if (currentStateIndex === ARR_STATES.length) {
                 currentStateIndex = 0
@@ -152,9 +147,9 @@ const initApp = () => {
                 for (let key in v) {
                     PARAMS.door[key] = v[key]
                 }
-            }, createUpdtr)
+            }, createUpdater)
         }
-        createUpdtr()
+        createUpdater()
 
 
         root.frameUpdater = startFrameUpdater(root)
@@ -183,7 +178,7 @@ const initApp = () => {
 
 const animateToNew = (target, onUpdate, oncomplete) => {
     let phase = 0
-    const spd = 0.01
+    const spd = 0.005
     let savedParams = { ...PARAMS.door }
     let targetParams = {...target.door}
     let currentParams = { ...savedParams }
