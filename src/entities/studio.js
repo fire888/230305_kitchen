@@ -13,14 +13,14 @@ export const createStudio = () => {
 
     const scene = new THREE.Scene()
 
-    const lightA = new THREE.AmbientLight( 0x4c1200, 1 )
+    const lightA = new THREE.AmbientLight( 0xffffff, 3)
     lightA.position.set( 5, 5, 5 )
     scene.add( lightA )
 
-    const light = new THREE.PointLight( 0x5b7558, 2, 10000)
-    light.position.set( -1000, 100, 200)
+    const light = new THREE.PointLight( 0xffffff, 4, 1000)
+    light.position.set( 0, 100, 200)
     scene.add( light )
-    scene.fog = new THREE.Fog(0x000000, 0, 200)
+    scene.fog = new THREE.Fog(0x000000, 0, 300)
 
     const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000)
     camera.position.set(0, 100, 100)

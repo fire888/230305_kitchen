@@ -8,6 +8,7 @@ import { startFrameUpdater  } from './utils/createFrameUpater'
 import { ASSETS_TO_LOAD } from './constants/constants_assetsToLoad'
 //import { createCyberTruck } from  './systems/cyberTruck'
 //import { createTown } from './systems/town'
+import { createDoor } from './entities/door'
 
 
 const root = {
@@ -32,12 +33,14 @@ const initApp = () => {
         //root.studio.setCamera(root.player.getCamera())
         //root.cyberTruck.setPlayerToCollisions(root.player.getCollisionMesh())
 
+        const door = createDoor(root)
 
         root.frameUpdater = startFrameUpdater(root)
         root.frameUpdater.on(n => {
             //root.player.update(n)
             //root.cyberTruck.update(n)
             root.studio.render()
+            door.mesh.rotation.y += 0.01
         })
         //hideStartScreen(root, root.keyboard.show)
         hideStartScreen(root, () => {})
