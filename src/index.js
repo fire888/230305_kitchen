@@ -123,11 +123,17 @@ const initApp = () => {
         door.mesh.castShadow = true
         root.studio.addToScene(door.mesh)
         door.mesh.rotation.y = PARAMS.door.openAngle
+        door.meshGeom.rotation.y = PARAMS.door.openAngle
+        door.meshGeom.position.x = -200
+        root.studio.addToScene(door.meshGeom)
 
         const box = createBox(root, PARAMS.door)
         box.mesh.receiveShadow = PARAMS_GUI.receiveShadow
         box.mesh.castShadow = true
         root.studio.addToScene(box.mesh)
+
+        box.meshGeom.position.x = -200
+        root.studio.addToScene(box.meshGeom)
 
 
         let updaterParams = null
@@ -140,6 +146,7 @@ const initApp = () => {
             updaterParams = animateToNew(ARR_STATES[currentStateIndex], v => {
                 door.setParams(v)
                 door.mesh.rotation.y = v.openAngle
+                door.meshGeom.rotation.y = v.openAngle
                 box.setParams(v)
                 for (let key in v) {
                     PARAMS.door[key] = v[key]
@@ -167,7 +174,6 @@ const initApp = () => {
                 gui.add(PARAMS.door, key).min( PARAMS_GUI.door[key].min).max(PARAMS_GUI.door[key].max).onChange(v => {
                     PARAMS.door[key] = v
                     door.setParams(PARAMS.door)
-                    door.mesh.rotation.y = PARAMS.door.openAngle
                     box.setParams(PARAMS.door)
                 }).listen()
             }
