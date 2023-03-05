@@ -7,10 +7,10 @@ import pz from '../assets/pz.jpg'
 import ny from '../assets/ny.jpg'
 import py from '../assets/py.jpg'
 
-import wMap from '../assets/wood/streaky-plywood_albedo.png'
-import wAOMap from '../assets/wood/streaky-plywood_ao.png'
-import wHeightMap from '../assets/wood/streaky-plywood_height.png'
-import wNormalMap from '../assets/wood/streaky-plywood_normal-ogl.png'
+import wMap from '../assets/streaky-plywood_albedo.png'
+import wAOMap from '../assets/streaky-plywood_ao.png'
+import wHeightMap from '../assets/streaky-plywood_height.png'
+import wNormalMap from '../assets/streaky-plywood_normal-ogl.png'
 
 
 

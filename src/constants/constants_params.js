@@ -1,3 +1,73 @@
+export const PARAMS = {
+    door: {
+        openAngle: -.5,
+        w: 80,
+        h: 80,
+        z: 5,
+        frame: 15,
+        z2: 3,
+        frame2: 5,
+        z3: 3,
+        frame3: 5,
+
+        zBox: -50,
+        tBox: 7,
+    }
+}
+
+
+export const PARAMS_GUI = {
+    animate: true,
+    receiveShadow: false,
+    door: {
+        w: {
+            min: 30,
+            max: 150,
+        },
+        h: {
+            min: 30,
+            max: 300,
+        },
+        z: {
+            min: 2,
+            max: 15,
+        },
+        frame: {
+            min: 5,
+            max: 30,
+        },
+        z2: {
+            min: 1,
+            max: 30,
+        },
+        frame2: {
+            min: 0,
+            max: 15,
+        },
+        z3: {
+            min: 0,
+            max: 40,
+        },
+        frame3: {
+            min: 0,
+            max: 15,
+        },
+        openAngle: {
+            min: -Math.PI,
+            max: 0,
+        },
+        zBox: {
+            min: -150,
+            max: -20,
+        },
+        tBox: {
+            min: 1,
+            max: 15,
+        },
+    },
+}
+
+
 export const ARR_STATES = [
     {"door":{"w":88.08,"h":95.4,"z":10.361,"frame":10.025,"z2":6.119,"frame2":5.595,"z3":4.68,"frame3":15,"openAngle":-0.386415896391545,"zBox":-51.13834978787653,"tBox":6.916}},
     {"door":{"w":148.56,"h":95.4,"z":10.361,"frame":25,"z2":1.131,"frame2":5.595,"z3":4.68,"frame3":15,"openAngle":-0.0376991118430775,"zBox":-109.46,"tBox":6.398}},

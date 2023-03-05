@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 
-const createDoorGeometry = (params) => {
+const createDoorGeometry = params => {
     let v = []
     let vG = []
 
@@ -49,7 +49,9 @@ const createDoorGeometry = (params) => {
         )
 
         v.push(
-            /** bottom inner */
+            /** inner */
+            
+            // bottom
             tBox, tBox, 0,               // 20
             w - tBox, tBox, 0,           // 21
             w - tBox, tBox, zBox + tBox, // 22
@@ -99,17 +101,12 @@ const createDoorGeometry = (params) => {
             w, 0, 0,
             w, 0, zBox,
             0, 0, zBox,
-
-
         )
     }
-
     updatePoints()
-
 
     const i = []
     const uv = []
-
 
     i.push(
         // outer
@@ -162,15 +159,14 @@ const createDoorGeometry = (params) => {
 
 
     const updateParams = () => {
-        v = []
         updatePoints()
         for (let i = 0; i < v.length; ++i) {
             vF32[i] = v[i]
         }
+        geometry.attributes.position.needsUpdate = true
         for (let i = 0; i < vG.length; ++i) {
             vG_F32[i] = vG[i]
         }
-        geometry.attributes.position.needsUpdate = true
         geometryGeom.attributes.position.needsUpdate = true
     }
 
@@ -189,16 +185,14 @@ const createDoorGeometry = (params) => {
 export const createBox = (root, params) => {
     const geometryBox = createDoorGeometry(params)
 
-
     const mesh = new THREE.Mesh(
         geometryBox.geometry,
         root.materials[0],
     )
 
-    const material = new THREE.LineBasicMaterial({ color: 0x888888 })
     const meshGeom = new THREE.Line(
         geometryBox.geometryGeom,
-        material
+        root.materialLine,
     )
 
     return {

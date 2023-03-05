@@ -39,14 +39,11 @@ export const createStudio = () => {
     ground.receiveShadow = true
     scene.add(ground)
 
-
-
     const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 20000)
     camera.position.set(100, 200, 300)
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.target.set(70, 100, 0)
     controls.update()
-
 
     const resize = () => {
         renderer.setSize(window.innerWidth, window.innerHeight)
@@ -56,7 +53,6 @@ export const createStudio = () => {
         }
     }
     window.addEventListener('resize', resize)
-
 
     let phase = 5.3
 

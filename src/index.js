@@ -1,83 +1,17 @@
-import { hideStartScreen } from './ui/hideStartScreen'
-import { createStudio } from './entities/studio'
-import { createLoadManager } from './helpers/loadManager'
-import { startFrameUpdater  } from './utils/createFrameUpater'
+import * as THREE from "three"
+import { 
+    PARAMS,
+    PARAMS_GUI,
+    ARR_STATES,
+} from './constants/constants_params'
 import { ASSETS_TO_LOAD } from './constants/constants_assetsToLoad'
+import { createLoadManager } from './helpers/loadManager'
+import { lerpObjFromTo } from './helpers/objHelper'
+import { createStudio } from './entities/studio'
 import { createDoor } from './entities/door'
 import { createBox } from './entities/box'
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-import * as THREE from "three";
-import { ARR_STATES } from './constants/animations'
-
-
-const PARAMS = {
-    door: {
-        openAngle: -.5,
-        w: 80,
-        h: 80,
-        z: 5,
-        frame: 15,
-        z2: 3,
-        frame2: 5,
-        z3: 3,
-        frame3: 5,
-
-        zBox: -50,
-        tBox: 7,
-    }
-}
-
-
-const PARAMS_GUI = {
-    animate: true,
-    receiveShadow: false,
-    door: {
-        w: {
-            min: 30,
-            max: 150,
-        },
-        h: {
-            min: 30,
-            max: 300,
-        },
-        z: {
-            min: 2,
-            max: 15,
-        },
-        frame: {
-            min: 5,
-            max: 30,
-        },
-        z2: {
-            min: 1,
-            max: 30,
-        },
-        frame2: {
-            min: 0,
-            max: 15,
-        },
-        z3: {
-            min: 0,
-            max: 40,
-        },
-        frame3: {
-            min: 0,
-            max: 15,
-        },
-        openAngle: {
-            min: -Math.PI,
-            max: 0,
-        },
-        zBox: {
-            min: -150,
-            max: -20,
-        },
-        tBox: {
-            min: 1,
-            max: 15,
-        },
-    },
-}
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
+import { hideStartScreen } from './ui/hideStartScreen'
 
 
 
@@ -90,6 +24,7 @@ const initApp = () => {
     root.loadManager.startLoad(ASSETS_TO_LOAD).then(assets => {
         root.assets = assets
 
+        /** create elements *****************/
         root.materials = [
             new THREE.MeshPhongMaterial({
                 color: 0x333333,
@@ -112,10 +47,8 @@ const initApp = () => {
                 specular: 0xffffff,
                 flatShading: true,
             }),
-            new THREE.MeshPhongMaterial({
-                color: 0x111111,
-            }),
         ]
+        root.materialLine = new THREE.LineBasicMaterial({ color: 0x888888 })
 
 
         const door = createDoor(root, PARAMS.door)
@@ -131,83 +64,70 @@ const initApp = () => {
         box.mesh.receiveShadow = PARAMS_GUI.receiveShadow
         box.mesh.castShadow = true
         root.studio.addToScene(box.mesh)
-
         box.meshGeom.position.x = -200
         root.studio.addToScene(box.meshGeom)
 
+        const changeMeshes = () => {
+            door.setParams(PARAMS.door)
+            door.mesh.rotation.y = PARAMS.door.openAngle
+            door.meshGeom.rotation.y = PARAMS.door.openAngle
+            box.setParams(PARAMS.door)
+        }
 
-        let updaterParams = null
+        
+        /** animate from state to state *******/
+        let updaterDoorParams = null
         let currentStateIndex = 0
-        const createUpdater = () => {
+        const iterateToNext = () => {
             ++currentStateIndex
             if (currentStateIndex === ARR_STATES.length) {
                 currentStateIndex = 0
             }
-            updaterParams = animateToNew(ARR_STATES[currentStateIndex], v => {
-                door.setParams(v)
-                door.mesh.rotation.y = v.openAngle
-                door.meshGeom.rotation.y = v.openAngle
-                box.setParams(v)
-                for (let key in v) {
-                    PARAMS.door[key] = v[key]
-                }
-            }, createUpdater)
+            updaterDoorParams = lerpObjFromTo(
+                PARAMS.door,
+                ARR_STATES[currentStateIndex].door, 
+                data => {
+                    for (let key in data) {
+                        PARAMS.door[key] = data[key]
+                    }
+                    changeMeshes()
+                },
+                iterateToNext,
+            )
         }
-        createUpdater()
+        iterateToNext()
 
 
-        root.frameUpdater = startFrameUpdater(root)
-        root.frameUpdater.on(n => {
+        /** animate app **********************/
+        const animate = () => {
+            requestAnimationFrame(animate)
+          
             if (PARAMS_GUI.animate) {
-                updaterParams && updaterParams.update()
+                updaterDoorParams && updaterDoorParams.update()
             }
             root.studio.render()
-        })
+        } 
+        animate()
+
+
+        /** prepare app ui *****************/
         hideStartScreen(root, () => {
             const gui = new GUI()
-            gui.add( PARAMS_GUI,'animate')
-            gui.add( PARAMS_GUI,'receiveShadow').onChange(v =>  {
+            gui.add(PARAMS_GUI, 'animate')
+            gui.add(PARAMS_GUI, 'receiveShadow').onChange(v =>  {
                 box.mesh.receiveShadow = v
                 door.mesh.receiveShadow = v
             })
             for (let key in PARAMS.door) {
                 gui.add(PARAMS.door, key).min( PARAMS_GUI.door[key].min).max(PARAMS_GUI.door[key].max).onChange(v => {
                     PARAMS.door[key] = v
-                    door.setParams(PARAMS.door)
-                    box.setParams(PARAMS.door)
+                    changeMeshes()
                 }).listen()
             }
             gui.open()
         })
     })
 }
-
-
-const animateToNew = (target, onUpdate, oncomplete) => {
-    let phase = 0
-    const spd = 0.005
-    let savedParams = { ...PARAMS.door }
-    let targetParams = {...target.door}
-    let currentParams = { ...savedParams }
-
-    return {
-        update: () => {
-            phase += spd
-            if (phase > 1) {
-                phase = 1
-            }
-            for (let key in targetParams) {
-                currentParams[key] = savedParams[key] + phase * (targetParams[key] - savedParams[key])
-            }
-            onUpdate(currentParams)
-            if (phase === 1) {
-                oncomplete()
-            }
-        }
-    }
-}
-
-
 
 
 window.addEventListener('load', initApp)
