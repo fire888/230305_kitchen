@@ -1,6 +1,5 @@
 import '../assets/progress-img.png'
 
-
 import nx from '../assets/nx.jpg'
 import px from '../assets/px.jpg'
 import nz from '../assets/nz.jpg'

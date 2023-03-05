@@ -12,30 +12,69 @@ const createDoorGeometry = (params) => {
             tBox = 2,
         } = params
 
-        /** box ******/
         v.push(
-            0, 0, 0, // 0
-            w, 0, 0, // 1
-            w, h, 0, // 2
-            0, h, 0, // 3
+            // left
+            0, 0, zBox,    // 0
+            0, 0, 0,       // 1
+            0, h, 0,       // 2
+            0, h, zBox,    // 3
 
-            0, 0, zBox, // 4
-            w, 0, zBox, // 5
-            w, h, zBox, // 6
-            0, h, zBox, // 7
+            // top
+            0, h, 0,       // 4
+            w, h, 0,       // 5
+            w, h, zBox,    // 6
+            0, h, zBox,    // 7
+
+            //right
+            w, 0, 0,       // 8
+            w, 0, zBox,    // 9
+            w, h, zBox,    // 10
+            w, h, 0,       // 11
+
+            //bottom
+            w, 0, 0,       // 12
+            0, 0, 0,       // 13
+            0, 0, zBox,    // 14
+            w, 0, zBox,    // 15
+
+            // back
+            w, 0, zBox,    // 16
+            0, 0, zBox,    // 17
+            0, h, zBox,    // 18
+            w, h, zBox,    // 19
         )
 
         v.push(
-            tBox, tBox, 0,         // 8
-            w - tBox, tBox, 0,     // 9
-            w - tBox, h - tBox, 0, // 10
-            tBox, h - tBox, 0,     // 11
+            /** bottom inner */
+            tBox, tBox, 0,               // 20
+            w - tBox, tBox, 0,           // 21
+            w - tBox, tBox, zBox + tBox, // 22
+            tBox, tBox, zBox + tBox,     // 23
 
-            tBox, tBox, zBox + tBox,         // 12
-            w - tBox, tBox, zBox + tBox,     // 13
-            w - tBox, h - tBox, zBox + tBox, // 14
-            tBox, h - tBox, zBox + tBox,     // 15
-        )
+            // left
+            tBox, tBox, 0,               // 24
+            tBox, tBox, zBox + tBox,     // 25
+            tBox, h - tBox, zBox + tBox, // 126
+            tBox, h - tBox, 0,           // 27
+
+            // right
+            w - tBox, tBox, zBox + tBox, // 28
+            w - tBox, tBox, 0,           // 29
+            w - tBox, h - tBox, 0,       // 30
+            w - tBox, h - tBox, zBox + tBox, // 31
+
+            // back
+            tBox, tBox, zBox + tBox,     // 32
+            w - tBox, tBox, zBox + tBox, // 33
+            w - tBox, h - tBox, zBox + tBox, // 34
+            tBox, h - tBox, zBox + tBox, // 35
+
+            // top
+            w - tBox, h - tBox, 0,       // 36
+            tBox, h - tBox, 0,           // 37
+            tBox, h - tBox, zBox + tBox, // 38
+            w - tBox, h - tBox, zBox + tBox, // 37
+         )
     }
 
     updatePoints()
@@ -44,57 +83,43 @@ const createDoorGeometry = (params) => {
     const i = []
     const uv = []
 
+
     i.push(
-        4, 0, 3, 4, 3, 7, //left
-        7, 3, 2, 7, 2, 6, // top
-        1, 5, 6, 1, 6, 2, // left
-        1, 0, 4, 1, 4, 5, // bottom
-        5, 4, 7, 5, 7, 6, // back
-    )
+        // outer
+        0, 1, 2, 0, 2, 3,         // left
+        4, 5, 6, 4, 6, 7,         // top
+        8, 9, 10, 8, 10, 11,      // right
+        12, 13, 14, 12, 14, 15,   // bottom
+        16, 17, 18, 16, 18, 19,   // back
 
-    uv.push(
-        0, 0,
-        1, 0,
-        1, 1,
-        0, 1,
-
-        0, 0,
-        1, 0,
-        1, 1,
-        0, 1,
-    )
-
-
-    /** inner Box  *****/
-    i.push(
-        8, 9, 13, 8, 13, 12, //bottom
-        13, 9, 10, 13, 10, 14, //right
-        8, 12, 15, 8, 15, 11, //left
-        10, 11, 15, 10, 15, 14, // top
-        12, 13, 14, 12, 14, 15, ///back
+        // inner
+        20, 21, 22, 20, 22, 23,
+        24, 25, 26, 24, 26, 27,
+        28, 29, 30, 28, 30, 31,
+        32, 33, 34, 32, 34, 35,
+        36, 37, 38, 36, 38, 39,
 
         // front
-        0, 1, 9, 0, 9, 8,
-        9, 1, 2, 9, 2, 10,
-        11, 10, 2, 11, 2, 3,
-        0, 8, 11, 0, 11, 3,
-
+        1, 8, 21, 1, 21, 20,    // bottom
+        8, 11, 30,8, 30, 29,    // right
+        37, 36, 5, 37, 5, 4,    // top
+        1, 24, 27, 1, 27, 2     // left
     )
+
+    const uvPolygon = [0, 0, 1, 0, 1, 1, 0, 1]
 
     uv.push(
-        0, 0,
-        1, 0,
-        1, 1,
-        0, 1,
-
-        0, 0,
-        1, 0,
-        1, 1,
-        0, 1,
+        ...uvPolygon,
+        ...uvPolygon,
+        ...uvPolygon,
+        ...uvPolygon,
+        ...uvPolygon,
+        ...uvPolygon,
+        ...uvPolygon,
+        ...uvPolygon,
+        ...uvPolygon,
+        ...uvPolygon,
     )
-
-
-
 
     const geometry = new THREE.BufferGeometry()
 
@@ -113,8 +138,8 @@ const createDoorGeometry = (params) => {
         updatePoints()
         for (let i = 0; i < v.length; ++i) {
             vF32[i] = v[i]
-            geometry.attributes.position.needsUpdate = true
         }
+        geometry.attributes.position.needsUpdate = true
     }
 
 

@@ -43,12 +43,12 @@ const openFullScreen = () => {
 export const hideStartScreen = (root, on) => {
     isAnimateLoader = false
     progressWrapper.classList.add('hidden')
-        startButton.style.display = 'flex'
-        startButton.classList.remove('hidden')
-        startButton.addEventListener('click', () => {
-            const startScreen = document.querySelector('.start-screen')
-            startScreen.style.display = 'none'
+    startButton.style.display = 'flex'
+    startButton.classList.remove('hidden')
+    //startButton.addEventListener('click', () => {
+    const startScreen = document.querySelector('.start-screen')
+    startScreen.style.display = 'none'
             //openFullScreen()
-            on()
-      })
+    on()
+      //})
 }

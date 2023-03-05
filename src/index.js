@@ -29,7 +29,8 @@ const PARAMS = {
 
 
 const PARAMS_GUI = {
-    animate: false,
+    animate: true,
+    receiveShadow: false,
     door: {
         w: {
             min: 30,
@@ -118,13 +119,13 @@ const initApp = () => {
 
 
         const door = createDoor(root, PARAMS.door)
-        door.mesh.receiveShadow = true
+        door.mesh.receiveShadow = PARAMS_GUI.receiveShadow
         door.mesh.castShadow = true
         root.studio.addToScene(door.mesh)
         door.mesh.rotation.y = PARAMS.door.openAngle
 
         const box = createBox(root, PARAMS.door)
-        box.mesh.receiveShadow = true
+        box.mesh.receiveShadow = PARAMS_GUI.receiveShadow
         box.mesh.castShadow = true
         root.studio.addToScene(box.mesh)
 
@@ -157,7 +158,11 @@ const initApp = () => {
         })
         hideStartScreen(root, () => {
             const gui = new GUI()
-            gui.add( PARAMS_GUI, 'animate' );
+            gui.add( PARAMS_GUI,'animate')
+            gui.add( PARAMS_GUI,'receiveShadow').onChange(v =>  {
+                box.mesh.receiveShadow = v
+                door.mesh.receiveShadow = v
+            })
             for (let key in PARAMS.door) {
                 gui.add(PARAMS.door, key).min( PARAMS_GUI.door[key].min).max(PARAMS_GUI.door[key].max).onChange(v => {
                     PARAMS.door[key] = v
