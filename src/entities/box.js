@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 
-const createDoorGeometry = params => {
+const createBoxGeometry = params => {
     let v = []
     let vG = []
 
@@ -183,7 +183,7 @@ const createDoorGeometry = params => {
 
 
 export const createBox = (root, params) => {
-    const geometryBox = createDoorGeometry(params)
+    const geometryBox = createBoxGeometry(params)
 
     const mesh = new THREE.Mesh(
         geometryBox.geometry,
